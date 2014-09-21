@@ -1,4 +1,4 @@
-# Ember-computed-change-gate
+# ember-computed-change-gate
 
 This README outlines the details of collaborating on this Ember addon.
 
