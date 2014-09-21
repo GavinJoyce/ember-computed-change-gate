@@ -1,6 +1,6 @@
 # ember-computed-change-gate
 
-Observers on Ember.js computed properties are fired regardless of the property value changes or not. `ember-computed-change-gate` only triggers observers when the result of a computed property changes.
+Observers on Ember.js computed properties are fired regardless of whether the property value changes or not. `ember-computed-change-gate` only triggers observers when the result of a computed property changes.
 
 Consider the following example:
 
