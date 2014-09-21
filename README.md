@@ -2,8 +2,6 @@
 
 Observers on Ember.js computed properties are fired regardless of the property value changes or not. `ember-computed-change-gate` only triggers observers when the result of a computed property changes.
 
-Questions? Ping me [@gavinjoyce](https://twitter.com/gavinjoyce)
-
 Consider the following example:
 
 ```javascript
@@ -36,8 +34,11 @@ Ember.Object.extend({
 
 Using `changeGate` will prevent the `onTrimmedNameChanged` observer from firing unless the value of `trimmedName` changes. Please see the video below for an example of how I've used this when building [Intercom](https://www.intercom.io/):
 
-![Image](https://cloud.githubusercontent.com/assets/2526/4349867/d399b15e-41c9-11e4-8319-43c2e06186aa.png)
-[Watch a screencast on how this addon was built >>](https://www.youtube.com/watch?v=PDgvMAyA8ic)
+[Watch a screencast on how this addon was built](https://www.youtube.com/watch?v=PDgvMAyA8ic)
+
+[Image](https://cloud.githubusercontent.com/assets/2526/4349867/d399b15e-41c9-11e4-8319-43c2e06186aa.png)
+
+Questions? Ping me [@gavinjoyce](https://twitter.com/gavinjoyce)
 
 ## Development Instructions
 
