@@ -1,25 +1,51 @@
 # ember-computed-change-gate
 
-This README outlines the details of collaborating on this Ember addon.
+Observers on Ember.js computed properties are fired regardless of the property value changes or not. `ember-computed-change-gate` only triggers observers when the result of a computed property changes.
 
-## Installation
+Questions? Ping me [@gavinjoyce](https://twitter.com/gavinjoyce)
+
+Consider the following example:
+
+```javascript
+Ember.Object.extend({
+  name: 'Gavin',
+  trimmedName: function() {
+    return this.get('name').trim();
+  }.property('name'),
+  onTrimmedNameChanged: function() {
+    console.log('trimmedName changed');
+  }.observes('trimmedName')
+});
+```
+
+Every time `name` changes `onTrimmedNameChanged` will be run, even if the value of `trimmedName` doesn't change.
+
+```javascript
+import changeGate from 'ember-computed-change-gate/change-gate';
+
+Ember.Object.extend({
+  name: 'Gavin',
+  trimmedName: changeGate('name', function(value) {
+    return value.trim();
+  }),
+  onTrimmedNameChanged: function() {
+    console.log('trimmedName changed');
+  }.observes('trimmedName')
+});
+```
+
+Using `changeGate` will prevent the `onTrimmedNameChanged` observer from firing unless the value of `trimmedName` changes. Please see the video below for an example of how I've used this when building [Intercom](https://www.intercom.io/):
+
+![Image](https://cloud.githubusercontent.com/assets/2526/4349867/d399b15e-41c9-11e4-8319-43c2e06186aa.png)
+[Watch a screencast on how this addon was built >>](https://www.youtube.com/watch?v=PDgvMAyA8ic)
+
+## Development Instructions
 
 * `git clone` this repository
 * `npm install`
 * `bower install`
 
-## Running
+### Running
 
 * `ember server`
 * Visit your app at http://localhost:4200.
-
-## Running Tests
-
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
