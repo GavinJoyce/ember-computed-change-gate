@@ -15,7 +15,6 @@ export default function(dependentKey, filter) {
     var isFirstRun = !getMeta(this, hasObserverKey);
 
     if(isFirstRun) { //setup an observer which is responsible for notifying property changes
-      // debugger;
       var value = filter(get(this, dependentKey));
 
       setMeta(this, hasObserverKey, true);
