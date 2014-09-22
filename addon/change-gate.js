@@ -1,38 +1,39 @@
 import Em from 'ember';
 
-var get = Em.get,
-    getMeta = Em.getMeta,
-    setMeta = Em.setMeta;
+var get = Em.get;
 
 var defaultFilter = function(value) { console.log('value', value); return value; };
 
 export default function(dependentKey, filter) {
   filter = filter || defaultFilter;
 
-  return Em.computed(function(key) {
-    var hasObserverKey = '_changeGate:%@:hasObserver'.fmt(key);
-    var lastValueKey =   '_changeGate:%@:lastValue'.fmt(key);
-    var isFirstRun = !getMeta(this, hasObserverKey);
+  var computed = Em.computed(function handler(key) {
+    var meta = computed.meta();
+    meta.hasObserver = false;
+    meta.lastValue = null;
+    var isFirstRun = !meta.hasObserver;
 
     if(isFirstRun) { //setup an observer which is responsible for notifying property changes
       var value = filter(get(this, dependentKey));
 
-      setMeta(this, hasObserverKey, true);
-      setMeta(this, lastValueKey, value);
+      meta.hasObserver = true;
+      meta.lastValue = value;
 
       this.addObserver(dependentKey, function() {
         var newValue = filter(get(this, dependentKey));
-        var lastValue = getMeta(this, lastValueKey);
+        var lastValue = meta.lastValue;
 
         if(newValue !== lastValue) {
-          setMeta(this, lastValueKey, newValue);
+          meta.lastValue = value;
           this.notifyPropertyChange(key);
         }
       });
 
       return value;
     } else {
-      return getMeta(this, lastValueKey);
+      return meta.lastValue;
     }
   });
+
+  return computed;
 }
