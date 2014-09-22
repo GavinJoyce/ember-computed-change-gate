@@ -2,7 +2,7 @@ import Em from 'ember';
 
 var get = Em.get;
 
-var defaultFilter = function(value) { console.log('value', value); return value; };
+var defaultFilter = function(value) { return value; };
 
 export default function(dependentKey, filter) {
   filter = filter || defaultFilter;
