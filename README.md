@@ -34,9 +34,9 @@ Ember.Object.extend({
 
 Using `changeGate` will prevent the `onTrimmedNameChanged` observer from firing unless the value of `trimmedName` changes. Please see the video below for an example of how I've used this when building [Intercom](https://www.intercom.io/):
 
-## [Watch a screencast showing how this addon was built >>](https://www.youtube.com/watch?v=PDgvMAyA8ic)
+## Watch a screencast showing how this addon was built below
 
-![Image](https://cloud.githubusercontent.com/assets/2526/4349867/d399b15e-41c9-11e4-8319-43c2e06186aa.png)
+[![Image](https://cloud.githubusercontent.com/assets/2526/4349867/d399b15e-41c9-11e4-8319-43c2e06186aa.png)](https://www.youtube.com/watch?v=PDgvMAyA8ic)
 
 Questions? Ping me [@gavinjoyce](https://twitter.com/gavinjoyce)
 
