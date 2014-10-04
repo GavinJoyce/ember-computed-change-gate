@@ -70,3 +70,82 @@ test('a changeGate without a function', function() {
   equal(observerCount, 2, 'the observer does fire when the value changes significantly');
   equal(gatedObserverCount, 1, 'the gated observer does not when the value changes significantly');
 });
+
+test('a changeGate on multiple instances of same class', function(){
+
+  var Paragraph = Em.Object.extend({
+    text: 'Hello there',
+    wordCount: changeGate('text', function(value) {
+      return value.split(/\s+/).length;
+    })
+  });
+
+  var p1 = Paragraph.create({text: 'Foo Bar baz'});
+  var p2 = Paragraph.create({text: 'Bar Foo'});
+
+  equal(p1.get('wordCount'), 3);
+  equal(p2.get('wordCount'), 2);
+
+
+  var p1Observer = 0;
+  var p2Observer = 0;
+
+  p1.addObserver('wordCount', function() {
+    p1Observer++;
+  });
+
+  p2.addObserver('wordCount', function() {
+    p2Observer++;
+  });
+
+  p1.set('text', 'Foo Bar Bar Boo');
+  equal(p1Observer, 1, "the observer fires once when the value is changed on p1");
+
+  p2.set('text', "Bar Foo Foo");
+  equal(p2Observer, 1, "the observer fires once when the value is changed on p2");
+
+  p1.set('text', 'Foo Bar Bar Bar Baa');
+  equal(p1Observer, 2, "change to p1 is only recorded on this object, not the other");
+});
+
+test('multiple changeGate properties on same object', function() {
+
+  var Paragraph = Em.Object.extend({
+    text: 'Hello there',
+    wordCount: changeGate('text', function(value) {
+      return value.split(/\s+/).length;
+    }),
+    letterCount: changeGate('text', function(value) {
+      return value.split('').length;
+    })
+  });
+
+  var p = Paragraph.create();
+
+  var wordCountObserverCount = 0;
+  var letterCountObserverCount = 0;
+
+  p.addObserver('wordCount', function() {
+    wordCountObserverCount++;
+  });
+
+  p.addObserver('letterCount', function(){
+    letterCountObserverCount++;
+  });
+
+  equal(p.get('wordCount'), 2); 
+  equal(p.get('letterCount'), 11);
+
+  p.set('text', 'Hello  there');
+  equal(p.get('wordCount'), 2);  
+  equal(p.get('letterCount'), 12);
+  equal(letterCountObserverCount, 1, "uneffected observer does not fire when another observer is fired");
+
+  p.set('text', 'Hello there you');
+  equal(p.get('letterCount'), 15);
+  equal(p.get('wordCount'), 3);
+
+  equal(letterCountObserverCount, 2, "intended observer fires when effected");
+  equal(wordCountObserverCount, 1, "uneffected observer does not fire when another observer is fired");
+
+});
