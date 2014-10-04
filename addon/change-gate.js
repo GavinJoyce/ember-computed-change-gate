@@ -13,10 +13,10 @@ export default function(dependentKey, filter) {
 
     var isFirstRun = !this.hasOwnProperty(lastValueKey);
     if (isFirstRun) { //setup an observer which is responsible for notifying property changes
-      this[lastValueKey] = filter(get(this, dependentKey));
+      this[lastValueKey] = filter.call(this, get(this, dependentKey));
 
       this.addObserver(dependentKey, function() {
-        var newValue = filter(get(this, dependentKey));
+        var newValue = filter.call(this, get(this, dependentKey));
         var lastValue = this[lastValueKey];
 
         if(newValue !== lastValue) {

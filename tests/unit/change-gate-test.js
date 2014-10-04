@@ -149,3 +149,21 @@ test('multiple changeGate properties on same object', function() {
   equal(wordCountObserverCount, 1, "uneffected observer does not fire when another observer is fired");
 
 });
+
+test("changeGate filter is bound to instance that it's attached to", function(){
+
+  expect(1);
+
+  var instance;
+
+  var Paragraph = Em.Object.extend({
+    text: 'Hello there',
+    wordCount: changeGate('text', function(value) {
+      equal(this, instance);
+      return value.split(/\s+/).length;
+    })
+  });
+
+  instance = Paragraph.create();
+  instance.get('wordCount');
+});
