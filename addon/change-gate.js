@@ -8,34 +8,25 @@ export default function(dependentKey, filter) {
   filter = filter || defaultFilter;
 
   var computed = Em.computed(function handler(key) {
-    var meta = computed.meta();
-    var isFirstRun = !meta.hasObserver;
 
-    var result;
-    if(isFirstRun) { //setup an observer which is responsible for notifying property changes
-      var value = filter(get(this, dependentKey));
+    var lastValueKey = '__changeGate%@LastValue'.fmt(key);
 
-      meta.hasObserver = true;
-      meta.lastValue = value;
+    var isFirstRun = !this.hasOwnProperty(lastValueKey);
+    if (isFirstRun) { //setup an observer which is responsible for notifying property changes
+      this[lastValueKey] = filter(get(this, dependentKey));
 
       this.addObserver(dependentKey, function() {
-        var meta = computed.meta();
         var newValue = filter(get(this, dependentKey));
-        var lastValue = meta.lastValue;
+        var lastValue = this[lastValueKey];
 
         if(newValue !== lastValue) {
-          meta.lastValue = newValue;
-          computed.meta(meta);
+          this[lastValueKey] = newValue;
           this.notifyPropertyChange(key);
         }
       });
-
-      result = value;
-    } else {
-      result = meta.lastValue;
     }
-    computed.meta(meta);
-    return result;
+
+    return this[lastValueKey];
   });
 
   return computed;
