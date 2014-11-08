@@ -42,6 +42,12 @@ Using `changeGate` will prevent the `onTrimmedNameChanged` observer from firing 
 
 Questions? Ping me [@gavinjoyce](https://twitter.com/gavinjoyce)
 
+## Installation
+
+This is an Ember CLI addon, to install:
+
+`npm install ember-computed-change-gate --save`
+
 ## Development Instructions
 
 * `git clone` this repository
