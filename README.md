@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/GavinJoyce/ember-computed-change-gate.svg)](https://travis-ci.org/GavinJoyce/ember-computed-change-gate)
 
+[![Ember Observer Score](http://emberobserver.com/badges/ember-computed-change-gate.svg)](http://emberobserver.com/addons/ember-computed-change-gate)
+
 Observers on Ember.js computed properties are fired if a dependant key changes, regardless of whether the property value changes or not. `ember-computed-change-gate` only triggers observers when the result of a computed property changes.
 
 Consider the following example:
@@ -9,12 +11,12 @@ Consider the following example:
 ```javascript
 Ember.Object.extend({
   name: 'Gavin',
-  trimmedName: function() {
+  trimmedName: Ember.computed('name'), function() {
     return this.get('name').trim();
-  }.property('name'),
-  onTrimmedNameChanged: function() {
+  }),
+  onTrimmedNameChanged: Ember.observer('trimmedName', function() {
     console.log('trimmedName changed');
-  }.observes('trimmedName')
+  })
 });
 ```
 
@@ -28,9 +30,9 @@ Ember.Object.extend({
   trimmedName: changeGate('name', function(value) {
     return value.trim();
   }),
-  onTrimmedNameChanged: function() {
+  onTrimmedNameChanged: Ember.observer('trimmedName', function() {
     console.log('trimmedName changed');
-  }.observes('trimmedName')
+  })
 });
 ```
 

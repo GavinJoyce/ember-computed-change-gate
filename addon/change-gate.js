@@ -1,23 +1,21 @@
 import Em from 'ember';
 
-var get = Em.get;
-
-var defaultFilter = function(value) { return value; };
+let get = Em.get;
+let defaultFilter = function(value) { return value; };
 
 export default function(dependentKey, filter) {
   filter = filter || defaultFilter;
 
-  var computed = Em.computed(function handler(key) {
+  let computed = Em.computed(function handler(key) {
+    let lastValueKey = `__changeGate${key}LastValue`;
 
-    var lastValueKey = '__changeGate%@LastValue'.fmt(key);
-
-    var isFirstRun = !this.hasOwnProperty(lastValueKey);
+    let isFirstRun = !this.hasOwnProperty(lastValueKey);
     if (isFirstRun) { //setup an observer which is responsible for notifying property changes
       this[lastValueKey] = filter.call(this, get(this, dependentKey));
 
       this.addObserver(dependentKey, function() {
-        var newValue = filter.call(this, get(this, dependentKey));
-        var lastValue = this[lastValueKey];
+        let newValue = filter.call(this, get(this, dependentKey));
+        let lastValue = this[lastValueKey];
 
         if(newValue !== lastValue) {
           this[lastValueKey] = newValue;
