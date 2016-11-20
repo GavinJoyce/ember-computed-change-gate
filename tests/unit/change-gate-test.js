@@ -71,6 +71,73 @@ test('a changeGate without a function', function(assert) {
   assert.equal(gatedObserverCount, 1, 'the gated observer does not when the value changes significantly');
 });
 
+test('a changeGate without a function and multiple property dependencies', function(assert) {
+  assert.throws(function() {
+    Em.Object.extend({
+      dep1: '',
+      dep2: '',
+      result: changeGate('dep1', 'dep2')
+    });
+  }, new Error('Assertion Failed: When depending on multiple properties a function must be passed as the last argument.'));
+});
+
+test('a changeGate with multiple property dependencies', function(assert) {
+  var Paragraph = Em.Object.extend({
+    text1: '',
+    text2: '',
+    wordCount: changeGate('text1', 'text2', function(val1, val2) {
+      var c1 = val1.split(/\s+/).length;
+      var c2 = val2.split(/\s+/).length;
+      return c1 + c2;
+    })
+  });
+
+  var paragraph = Paragraph.create({text1: 'hello', text2: 'world'});
+  assert.equal(paragraph.get('wordCount'), '2');
+
+  var text1ObserverCount = 0;
+  var text2ObserverCount = 0;
+  var wordCountObserverCount = 0;
+
+  paragraph.addObserver('text1', function() {
+    text1ObserverCount++;
+  });
+
+  paragraph.addObserver('text2', function() {
+    text2ObserverCount++;
+  });
+
+  paragraph.addObserver('wordCount', function() {
+    wordCountObserverCount++;
+  });
+
+  // same count for both
+  paragraph.set('text1', 'hi');
+  paragraph.set('text2', 'everyone');
+  assert.equal(text1ObserverCount, 1, 'the observer does fire when the value changes significantly');
+  assert.equal(text2ObserverCount, 1, 'the observer does fire when the value changes significantly');
+  assert.equal(wordCountObserverCount, 0, 'the gated observer does not fire when the value does not change');
+
+  // different count for text1
+  paragraph.set('text1', 'hi hi');
+  assert.equal(text1ObserverCount, 2, 'the text1 observer does fires when the value changes significantly');
+  assert.equal(wordCountObserverCount, 1, 'the wordCount observer does fire when the value changes significantly');
+
+  // different count for text2
+  paragraph.set('text2', 'hi hi');
+  assert.equal(text2ObserverCount, 2, 'the text2 observer does fire when the value changes significantly');
+  assert.equal(wordCountObserverCount, 2, 'the wordCount observer does fire when the value changes significantly');
+
+  // different count for text1 and text2
+  paragraph.set('text1', 'a b c');
+  paragraph.set('text2', 'd e f');
+  assert.equal(text1ObserverCount, 3, 'the text1 observer does fire when the value changes significantly');
+  assert.equal(text2ObserverCount, 3, 'the text2 observer does fire when the value changes significantly');
+  assert.equal(wordCountObserverCount, 4, 'the wordCount observer does fire when the value changes significantly');
+
+  assert.equal(paragraph.get('wordCount'), 6, 'wordCount has the correct value');
+});
+
 test('a changeGate on multiple instances of same class', function(assert) {
   var Paragraph = Em.Object.extend({
     text: 'Hello there',
