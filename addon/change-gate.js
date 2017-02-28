@@ -17,7 +17,7 @@ export default function(dependentKey, filter) {
         let newValue = filter.call(this, get(this, dependentKey));
         let lastValue = this[lastValueKey];
 
-        if(newValue !== lastValue) {
+        if(!Em.isEqual(newValue, lastValue)) {
           this[lastValueKey] = newValue;
           this.notifyPropertyChange(key);
         }
