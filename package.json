@@ -1,6 +1,6 @@
 {
   "name": "ember-computed-change-gate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create computed properties which trigger observers only if the value of the computed property has changed",
   "keywords": [
     "ember-addon"
