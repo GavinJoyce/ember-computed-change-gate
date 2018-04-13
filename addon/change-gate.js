@@ -1,4 +1,6 @@
-import Em from 'ember';
+import { isEqual } from '@ember/utils';
+import { computed } from '@ember/object';
+import { assert } from '@ember/debug';
 
 export default function() {
   let args = [].slice.call(arguments);
@@ -10,7 +12,7 @@ export default function() {
   } else { // no filter function
     // passing a function is optional only for computeds with a single dependency 
     let message = 'When depending on multiple properties a function must be passed as the last argument.';
-    Em.assert(message, args.length === 1);
+    assert(message, args.length === 1);
   }
 
   let dependentKeys = args; // for code read-ability
@@ -27,14 +29,14 @@ export default function() {
     return filter.apply(this, dependentValues);
   }
 
-  let computed = Em.computed(function handler(key) {
+  let computed = computed(function handler(key) {
     let lastValueKey = `__changeGate${key}LastValue`;
 
     function attemptPropertyChange(dependentKeys) {
       let newValue = computeValue.call(this, dependentKeys); 
       let lastValue = this[lastValueKey];
 
-      if(!Em.isEqual(newValue, lastValue)) {
+      if(!isEqual(newValue, lastValue)) {
         this[lastValueKey] = newValue;
         this.notifyPropertyChange(key);
       }
