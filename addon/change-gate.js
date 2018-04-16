@@ -10,7 +10,7 @@ export default function() {
   if (typeof last === 'function') {
     filter = args.pop();
   } else { // no filter function
-    // passing a function is optional only for computeds with a single dependency 
+    // passing a function is optional only for computeds with a single dependency
     let message = 'When depending on multiple properties a function must be passed as the last argument.';
     assert(message, args.length === 1);
   }
@@ -29,11 +29,11 @@ export default function() {
     return filter.apply(this, dependentValues);
   }
 
-  let computed = computed(function handler(key) {
+  let changeGateComputed = computed(function handler(key) {
     let lastValueKey = `__changeGate${key}LastValue`;
 
     function attemptPropertyChange(dependentKeys) {
-      let newValue = computeValue.call(this, dependentKeys); 
+      let newValue = computeValue.call(this, dependentKeys);
       let lastValue = this[lastValueKey];
 
       if(!isEqual(newValue, lastValue)) {
@@ -44,7 +44,7 @@ export default function() {
 
     let isFirstRun = !this.hasOwnProperty(lastValueKey);
     if (isFirstRun) {
-      this[lastValueKey] = computeValue.call(this, dependentKeys); 
+      this[lastValueKey] = computeValue.call(this, dependentKeys);
 
       //setup observers responsible for notifying property changes
       let handleDependencyChange = () => {
@@ -58,5 +58,5 @@ export default function() {
     return this[lastValueKey];
   });
 
-  return computed;
+  return changeGateComputed;
 }
