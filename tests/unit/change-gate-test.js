@@ -1,11 +1,11 @@
-import Em from 'ember';
+import EmberObject, { computed } from '@ember/object';
 import { module, test } from 'qunit';
 import changeGate from 'ember-computed-change-gate/change-gate';
 
 module('changeGate');
 
 test('a changeGate with a function', function(assert) {
-  var Paragraph = Em.Object.extend({
+  var Paragraph = EmberObject.extend({
     text: 'Hello there',
     wordCount: changeGate('text', function(value) {
       return value.split(/\s+/).length;
@@ -36,9 +36,9 @@ test('a changeGate with a function', function(assert) {
 });
 
 test('a changeGate without a function', function(assert) {
-  var Hippo = Em.Object.extend({
+  var Hippo = EmberObject.extend({
     name: 'Alex',
-    trimmedName: Em.computed('name', function() {
+    trimmedName: computed('name', function() {
       return this.get('name').trim();
     }),
     gatedTrimmedName: changeGate('trimmedName')
@@ -73,7 +73,7 @@ test('a changeGate without a function', function(assert) {
 
 test('a changeGate without a function and multiple property dependencies', function(assert) {
   assert.throws(function() {
-    Em.Object.extend({
+    EmberObject.extend({
       dep1: '',
       dep2: '',
       result: changeGate('dep1', 'dep2')
@@ -82,7 +82,7 @@ test('a changeGate without a function and multiple property dependencies', funct
 });
 
 test('a changeGate with multiple property dependencies', function(assert) {
-  var Paragraph = Em.Object.extend({
+  var Paragraph = EmberObject.extend({
     text1: '',
     text2: '',
     wordCount: changeGate('text1', 'text2', function(val1, val2) {
@@ -139,7 +139,7 @@ test('a changeGate with multiple property dependencies', function(assert) {
 });
 
 test('a changeGate on multiple instances of same class', function(assert) {
-  var Paragraph = Em.Object.extend({
+  var Paragraph = EmberObject.extend({
     text: 'Hello there',
     wordCount: changeGate('text', function(value) {
       return value.split(/\s+/).length;
@@ -174,7 +174,7 @@ test('a changeGate on multiple instances of same class', function(assert) {
 });
 
 test('multiple changeGate properties on same object', function(assert) {
-  var Paragraph = Em.Object.extend({
+  var Paragraph = EmberObject.extend({
     text: 'Hello there',
     wordCount: changeGate('text', function(value) {
       return value.split(/\s+/).length;
@@ -218,7 +218,7 @@ test("changeGate filter is bound to instance that it's attached to", function(as
 
   var instance;
 
-  var Paragraph = Em.Object.extend({
+  var Paragraph = EmberObject.extend({
     text: 'Hello there',
     wordCount: changeGate('text', function(value) {
       assert.equal(this, instance);
