@@ -9,6 +9,7 @@ export default Controller.extend({
   gatedWordCount: changeGate('text', function(value) {
     return value.trim().split(/\s+/).length;
   }),
+  //eslint-disable-next-line ember/no-observers
   gatedWordCountChanged: observer('gatedWordCount', function() {
     this.incrementProperty('gatedObserverCount');
   }),
@@ -17,6 +18,7 @@ export default Controller.extend({
   normalWordCount: computed('text', function() {
     return this.get('text').trim().split(/\s+/).length;
   }),
+  //eslint-disable-next-line ember/no-observers
   normalWordCountChanged: observer('normalWordCount', function() {
     this.incrementProperty('normalObserverCount');
   })
