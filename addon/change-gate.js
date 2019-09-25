@@ -2,6 +2,8 @@ import { isEqual } from '@ember/utils';
 import { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 
+const ASYNC_OBSERVERS = true;
+
 export default function() {
   let args = [].slice.call(arguments);
   let filter = null;
@@ -51,7 +53,7 @@ export default function() {
         return attemptPropertyChange.call(this, dependentKeys);
       };
       for(let dependentKey of dependentKeys) {
-        this.addObserver(dependentKey, handleDependencyChange);
+        this.addObserver(dependentKey, undefined, handleDependencyChange, ASYNC_OBSERVERS);
       }
     }
 
