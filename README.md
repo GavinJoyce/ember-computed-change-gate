@@ -38,6 +38,26 @@ Ember.Object.extend({
 
 Using `changeGate` will prevent the `onTrimmedNameChanged` observer from firing unless the value of `trimmedName` changes. Please see the video below for an example of how I've used this when building [Intercom](https://www.intercom.io/):
 
+## Advanced configuration
+Since Ember 3.11 extra configuration can be passed to observers to allow them to be configured synchronous or asynchronous. To configure the synchronous state of the observer in `changeGate` pass a config object as the last param with the `sync` property set appropriately.
+
+For example:
+
+```js
+// synchronous observer
+trimmedName: changeGate('name', function(value) {
+  return value.trim();
+}, { sync: true }),
+
+//asynchronous observer
+trimmedName: changeGate('name', function(value) {
+  return value.trim();
+}, { sync: false }),
+```
+
+See [this RFC](https://emberjs.github.io/rfcs/0494-async-observers.html) and [blog post](https://www.pzuraq.com/ember-octane-update-async-observers/) for more informationa about async observers.
+
+
 ## Watch a screencast showing how this addon was built below
 
 [![Image](https://cloud.githubusercontent.com/assets/2526/4349867/d399b15e-41c9-11e4-8319-43c2e06186aa.png)](https://www.youtube.com/watch?v=PDgvMAyA8ic)

@@ -5,11 +5,21 @@ import { assert } from '@ember/debug';
 export default function() {
   let args = [].slice.call(arguments);
   let filter = null;
+  let config = null;
 
   let last = args[args.length-1];
   if (typeof last === 'function') {
     filter = args.pop();
-  } else { // no filter function
+  } else if (typeof last === 'object' && last.sync !== undefined) {
+    let secondLast = args[args.length-2];
+    config = args.pop();
+    if (typeof secondLast === 'function') {
+      filter = args.pop();
+    }
+  }
+
+  // no filter function
+  if (!filter) {
     // passing a function is optional only for computeds with a single dependency
     let message = 'When depending on multiple properties a function must be passed as the last argument.';
     assert(message, args.length === 1);
@@ -51,7 +61,13 @@ export default function() {
         return attemptPropertyChange.call(this, dependentKeys);
       };
       for(let dependentKey of dependentKeys) {
-        this.addObserver(dependentKey, handleDependencyChange);
+        let params = [dependentKey, handleDependencyChange]
+        if (config && config.sync !== undefined) {
+          // We need to push `null` because the `addObserver` method signature is `addObserver(obj, path, method, target, sync)`
+          params.push(null);
+          params.push(config.sync);
+        }
+        this.addObserver(...params);
       }
     }
 
